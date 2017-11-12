@@ -1,0 +1,6 @@
+.quiz-container, .question-container {
+    border: 1px solid gray;
+    border-radius: 5px;
+    margin: 2%;
+    padding: 2%;
+}

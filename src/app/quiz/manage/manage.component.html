@@ -1,0 +1,85 @@
+<div class="container">
+  <form class="form-horizontal" [formGroup]="quizForm" (ngSubmit)="onSubmit(quizForm)" novalidate>
+    <!---Quiz Quiz -->
+    <div formArrayName="quizes">
+      <h1>Quiz List</h1>
+      <div class="quiz-container" *ngFor="let quiz of getQuizes(quizForm); let i = index">
+        <div [formGroupName]="i">
+          <h2>Quiz #{{i+1}}</h2>
+          <div class="form-group">
+            <div class="col-md-2">
+              <label class="control-label"  for="quizTitle">Quiz Title:</label>
+            </div>
+            <div class="col-md-10">
+              <input class="form-control"  type="text" placeholder="Quiz Title" formControlName="quizTitle" id="quizTitle">
+            </div>
+          </div>
+          <button class="btn btn-default" type="button" (click)="addQuestion(i);">Add Question</button>
+          <!-- Question segment -->
+          <div formArrayName="questions">
+            <div class="question-container" [formGroupName]="j" *ngFor="let question of getQuestions(quiz); let j = index">
+              <h3 class="ui header">Question #{{j+1}}</h3>
+              <div class="form-group">
+                <div class="col-md-2">
+                  <label class="control-label"  for="questionTitle">Question:</label>
+                </div>
+                <div class="col-md-10">
+                  <input class="form-control"  type="text" placeholder="Question goes here." formControlName="questionTitle" id="questionTitle">
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="col-md-2">
+                  <label class="control-label"  for="questionType">Question Type:</label>
+                </div>
+                <div class="col-md-2">
+                  <select class="form-control" formControlName="questionType" id="questionType">
+                    <option value="0">MCQ</option>
+                    <option value="1">Input Answer</option>
+                  </select>
+                </div>
+              </div>
+              <div *ngIf="quizForm.errors" class="alert alert-danger">
+                {{ quizForm.errors }}
+              </div>
+              <br>
+              <button class="btn btn-default" *ngIf="question.value.questionType === '0'" type="button" (click)="addOptions(i,j)">Add Option</button>
+              <br>
+              <!-- <a (click)="remove(i,j)">Remove whole options</a> -->
+              <!-- Option Addation -->
+              <div formArrayName="options">
+                <div [formGroupName]="k" *ngFor="let option of getOptions(question); let k=index">
+                  <div class="form-group">
+                    <div class="col-md-2">
+                      <label class="control-label" for="optionTitle">Option {{k+1}}:</label>
+                    </div>
+                    <div class="col-md-8">
+                      <input class="form-control" type="text" placeholder="Option {{k+1}}" formControlName="optionTitle">
+                    </div>
+                    <div class="col-md-2">
+                      <button class="btn" type="button" *ngIf="getOptions(question).length > 0" (click)="removeOption(i,j,k)">Remove</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- End Option Addition -->
+              <div *ngFor="let option of getOptions(question); let k=index">
+                <input class="form-control"  type="radio" value="{{k}}" name="correctAnswer" formControlName="correctAnswer"> {{option.value.optionTitle}}
+              </div>
+              <br>
+              <button class="btn center-block" type="button" *ngIf="getQuestions(quiz).length > 0" (click)="removeQuestion(i)">Remove Question</button>
+            </div>
+            <br>
+          </div>
+          <!-- End Question -->
+
+        </div>
+        <br>
+        <button class="btn btn-default" type="button" (click)="addQuiz()">Add Another Quiz</button>
+        <button class="btn" type="button" *ngIf="getQuizes(quizForm).length > 0" (click)="removeQuiz(i)">Remove Quiz</button>
+      </div>
+    </div>
+    <button class="btn btn-primary center-block" type="button" (click)="onSubmit(quizForm)">Save All Quizes</button>
+    <!-- End Quiz -->
+  </form>
+</div>
+<!-- <pre>{{quizForm.value | json}}</pre> -->
